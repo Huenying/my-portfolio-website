@@ -113,7 +113,7 @@ function ProjectCardContent({
 }) {
   return (
     <div
-      className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
+      className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
     >
       <div className="w-full md:w-1/2 h-40 md:h-full flex items-center justify-center">
         <div className="text-[6rem] md:text-[10rem] leading-none select-none">
@@ -235,8 +235,8 @@ export default function Portfolio() {
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 40,
-    damping: 25,
+    stiffness: 150,
+    damping: 20,
     restDelta: 0.001,
   });
 

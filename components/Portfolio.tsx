@@ -303,7 +303,7 @@ export default function Portfolio() {
             style={{ height: `${filteredProjects.length * 100}vh` }}
           >
             {/* Sticky container — all cards converge here */}
-            <div className="sticky top-24 h-screen flex items-center justify-center">
+            <div className="sticky top-24 h-screen flex items-start justify-center pt-8">
               <div
                 className="w-full relative"
                 style={{ height: "65vh", minHeight: "400px" }}

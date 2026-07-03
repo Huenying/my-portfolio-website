@@ -10,21 +10,21 @@ export default function Hero() {
     offset: ["start start", "end start"],
   });
 
-  // Cards snap instantly to spread position as soon as user scrolls
-  // 0 → stacked together, tiny scroll → instantly full spread in a line
-  const card1X = useTransform(scrollYProgress, [0, 0.01, 0.1], ["0px", "-420px", "-420px"]);
-  const card2Y = useTransform(scrollYProgress, [0, 0.01, 0.1], ["0px", "0px", "0px"]);
-  const card3X = useTransform(scrollYProgress, [0, 0.01, 0.1], ["0px", "420px", "420px"]);
+  // Cards spread out gradually over the first ~3 scrolls
+  // At scroll=0: stacked together; at scroll=35%: fully spread in a line
+  const card1X = useTransform(scrollYProgress, [0, 0.15, 0.35], ["0px", "-210px", "-420px"]);
+  const card2Y = useTransform(scrollYProgress, [0, 0.15, 0.35], ["0px", "-10px", "0px"]);
+  const card3X = useTransform(scrollYProgress, [0, 0.15, 0.35], ["0px", "210px", "420px"]);
 
-  const card1Scale = useTransform(scrollYProgress, [0, 0.01, 0.1], [1, 0.92, 0.92]);
-  const card3Scale = useTransform(scrollYProgress, [0, 0.01, 0.1], [1, 0.92, 0.92]);
+  const card1Scale = useTransform(scrollYProgress, [0, 0.35], [1, 0.92]);
+  const card3Scale = useTransform(scrollYProgress, [0, 0.35], [1, 0.92]);
 
-  const card1Rotate = useTransform(scrollYProgress, [0, 0.01, 0.1], ["-2deg", "0deg", "0deg"]);
-  const card3Rotate = useTransform(scrollYProgress, [0, 0.01, 0.1], ["2deg", "0deg", "0deg"]);
+  const card1Rotate = useTransform(scrollYProgress, [0, 0.35], ["-2deg", "0deg"]);
+  const card3Rotate = useTransform(scrollYProgress, [0, 0.35], ["2deg", "0deg"]);
 
-  const card1Z = useTransform(scrollYProgress, [0, 0.01, 0.1], [30, 10, 10]);
-  const card2Z = useTransform(scrollYProgress, [0, 0.01, 0.1], [20, 10, 10]);
-  const card3Z = useTransform(scrollYProgress, [0, 0.01, 0.1], [10, 10, 10]);
+  const card1Z = useTransform(scrollYProgress, [0, 0.35], [30, 10]);
+  const card2Z = useTransform(scrollYProgress, [0, 0.35], [20, 10]);
+  const card3Z = useTransform(scrollYProgress, [0, 0.35], [10, 10]);
 
   const opacity = useTransform(scrollYProgress, [0, 0.5, 0.9, 1], [1, 1, 0.6, 0]);
 

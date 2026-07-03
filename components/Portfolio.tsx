@@ -5,6 +5,7 @@ import {
   motion,
   useScroll,
   useTransform,
+  useSpring,
 } from "framer-motion";
 
 const CATEGORIES = [
@@ -105,83 +106,108 @@ const PROJECTS = [
   },
 ];
 
-function OverlappingCard({
+function ProjectCardContent({
   project,
 }: {
   project: (typeof PROJECTS)[0];
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  // Each card independently tracks its own scroll position
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "start start"],
-  });
-
-  // Slide up from below as card enters viewport
-  const y = useTransform(scrollYProgress, [0, 1], ["100%", "0%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0, 1, 1]);
-  const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
-
   return (
     <div
-      ref={cardRef}
-      className="sticky top-56 w-full h-[60vh] min-h-[420px] rounded-3xl overflow-hidden"
+      className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
     >
-      <motion.div
-        style={{ y, opacity, scale }}
-        className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
-      >
-        {/* Project image/icon area */}
-        <div className="w-full md:w-1/2 h-40 md:h-full flex items-center justify-center">
-          <div className="text-[6rem] md:text-[10rem] leading-none select-none">
-            {project.image}
-          </div>
+      <div className="w-full md:w-1/2 h-40 md:h-full flex items-center justify-center">
+        <div className="text-[6rem] md:text-[10rem] leading-none select-none">
+          {project.image}
         </div>
-
-        {/* Project info */}
-        <div className="w-full md:w-1/2 space-y-4 md:space-y-5">
-          <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
-            {CATEGORIES.find((c) => c.id === project.category)?.label}
-          </div>
-          <h3 className="text-2xl md:text-4xl font-bold text-gray-900">
-            {project.title}
-          </h3>
-          <p className="text-textSecondary text-sm md:text-base leading-relaxed">
-            {project.description}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <motion.button
-            whileHover={{ x: 5 }}
-            className="inline-flex items-center gap-2 text-primary font-medium text-sm group"
-          >
-            View Project
-            <svg
-              className="w-4 h-4 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+      </div>
+      <div className="w-full md:w-1/2 space-y-4 md:space-y-5">
+        <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
+          {CATEGORIES.find((c) => c.id === project.category)?.label}
+        </div>
+        <h3 className="text-2xl md:text-4xl font-bold text-gray-900">
+          {project.title}
+        </h3>
+        <p className="text-textSecondary text-sm md:text-base leading-relaxed">
+          {project.description}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </motion.button>
+              {tag}
+            </span>
+          ))}
         </div>
-      </motion.div>
+        <motion.button
+          whileHover={{ x: 5 }}
+          className="inline-flex items-center gap-2 text-primary font-medium text-sm group"
+        >
+          View Project
+          <svg
+            className="w-4 h-4 transition-transform group-hover:translate-x-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 8l4 4m0 0l-4 4m4-4H3"
+            />
+          </svg>
+        </motion.button>
+      </div>
     </div>
+  );
+}
+
+/** A single overlapping card that slides up to cover the first project */
+function OverlapProjectCard({
+  project,
+  index,
+  total,
+  scrollProgress,
+}: {
+  project: (typeof PROJECTS)[0];
+  index: number;
+  total: number;
+  scrollProgress: any;
+}) {
+  // Each card slides up in sequence
+  // Card N starts sliding when Card N-1 has reached its midpoint
+  const progressStart = index / total;
+  const progressEnd = (index + 1) / total;
+
+  // Start slightly before 50% progress, end at ~85%
+  const slideStart = progressStart * 0.5 + 0.15;
+  const slideEnd = progressEnd * 0.6 + 0.15;
+
+  const y = useTransform(
+    scrollProgress,
+    [slideStart, slideEnd],
+    ["100%", "0%"]
+  );
+  const opacity = useTransform(
+    scrollProgress,
+    [slideStart - 0.05, slideStart, slideEnd],
+    [0, 1, 1]
+  );
+  const scale = useTransform(
+    scrollProgress,
+    [slideStart, slideEnd],
+    [0.85, 1]
+  );
+
+  return (
+    <motion.div
+      style={{ y, opacity, scale }}
+      className="absolute inset-0 z-20 rounded-3xl overflow-hidden pointer-events-auto"
+    >
+      <ProjectCardContent project={project} />
+    </motion.div>
   );
 }
 
@@ -189,6 +215,7 @@ export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("competition");
   const [showMore, setShowMore] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
 
   // Filter projects by active category
   const filteredProjects = PROJECTS.filter(
@@ -200,6 +227,18 @@ export default function Portfolio() {
 
   // Remaining projects for scroll overlap (index 1+)
   const remainingProjects = filteredProjects.slice(1);
+
+  // Scroll animation for the whole stack container
+  const { scrollYProgress } = useScroll({
+    target: stackRef,
+    offset: ["start start", "end end"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 40,
+    damping: 25,
+    restDelta: 0.001,
+  });
 
   return (
     <section
@@ -256,73 +295,36 @@ export default function Portfolio() {
           ))}
         </motion.div>
 
-        {/* First project - always visible (no scroll animation) */}
-        {firstProject && (
-          <motion.div
-            key={`fixed-${firstProject.id}`}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full rounded-3xl border overflow-hidden mb-8"
+        {/* Scroll-stacked project showcase */}
+        {filteredProjects.length > 0 && (
+          <div
+            ref={stackRef}
+            className="relative"
+            style={{ height: `${filteredProjects.length * 100}vh` }}
           >
-            <div
-              className={`w-full border ${firstProject.borderColor} ${firstProject.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg rounded-3xl`}
-            >
-              <div className="w-full md:w-1/2 h-40 md:h-64 flex items-center justify-center">
-                <div className="text-[6rem] md:text-[10rem] leading-none select-none">
-                  {firstProject.image}
+            {/* Sticky container — all cards converge here */}
+            <div className="sticky top-24 h-screen flex items-center py-16">
+              <div
+                className="w-full relative"
+                style={{ height: "65vh", minHeight: "480px" }}
+              >
+                {/* First project — base layer, always visible */}
+                <div className="absolute inset-0 z-10 rounded-3xl overflow-hidden">
+                  <ProjectCardContent project={firstProject} />
                 </div>
-              </div>
-              <div className="w-full md:w-1/2 space-y-4 md:space-y-5">
-                <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
-                  {CATEGORIES.find((c) => c.id === firstProject.category)?.label}
-                </div>
-                <h3 className="text-2xl md:text-4xl font-bold text-gray-900">
-                  {firstProject.title}
-                </h3>
-                <p className="text-textSecondary text-sm md:text-base leading-relaxed">
-                  {firstProject.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {firstProject.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <motion.button
-                  whileHover={{ x: 5 }}
-                  className="inline-flex items-center gap-2 text-primary font-medium text-sm group"
-                >
-                  View Project
-                  <svg
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
-                  </svg>
-                </motion.button>
+
+                {/* Subsequent projects — each slides up and overlaps the first */}
+                {remainingProjects.map((project, idx) => (
+                  <OverlapProjectCard
+                    key={project.id}
+                    project={project}
+                    index={idx}
+                    total={remainingProjects.length}
+                    scrollProgress={smoothProgress}
+                  />
+                ))}
               </div>
             </div>
-          </motion.div>
-        )}
-
-        {/* Overlap section — each card uses individual sticky so they all converge */}
-        {remainingProjects.length > 0 && (
-          <div className="relative mb-16" style={{ height: `${remainingProjects.length * 110}vh` }}>
-            {remainingProjects.map((project) => (
-              <OverlappingCard key={project.id} project={project} />
-            ))}
           </div>
         )}
 
@@ -340,7 +342,7 @@ export default function Portfolio() {
         )}
 
         {/* See More Details toggle */}
-        <div className="mt-12 text-center">
+        <div className="mt-16 text-center">
           <motion.button
             onClick={() => setShowMore(!showMore)}
             whileHover={{ scale: 1.02 }}

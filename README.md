@@ -1,10 +1,8 @@
 ## About
 
-Cynthia Personal Portfolio Website built with Next.js Tailwind CSS and Framer Motion
+Cynthia's personal portfolio website: This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) and Tailwind CSS and Framer Motion.
 
 Link: https://huenying.github.io/my-portfolio-website/
-
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 

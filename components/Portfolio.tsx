@@ -5,7 +5,6 @@ import {
   motion,
   useScroll,
   useTransform,
-  useSpring,
 } from "framer-motion";
 
 const CATEGORIES = [
@@ -106,46 +105,31 @@ const PROJECTS = [
   },
 ];
 
-// The first 4 projects are used for the overlap section
-// Project 1 is always visible (fixed), projects 2-4 use scroll-overlap
-const OVERLAY_PROJECTS = PROJECTS.slice(0, 4);
-
 function OverlappingCard({
   project,
-  index,
-  scrollProgress,
 }: {
   project: (typeof PROJECTS)[0];
-  index: number;
-  scrollProgress: any;
 }) {
-  // Index-0 is the first overlapped card (project #2, index=0 in this context)
-  const total = OVERLAY_PROJECTS.length - 1; // 3 animated cards
-  const progressStart = index / total;
-  const progressEnd = (index + 1) / total;
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const y = useTransform(
-    scrollProgress,
-    [progressStart, progressEnd],
-    ["100%", "0%"]
-  );
-  const opacity = useTransform(
-    scrollProgress,
-    [progressStart - 0.1, progressStart, progressEnd],
-    [0, 1, 1]
-  );
-  const scale = useTransform(
-    scrollProgress,
-    [progressStart, progressEnd],
-    [0.85, 1]
-  );
+  // Each card independently tracks its own scroll position
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "start start"],
+  });
+
+  // Slide up from below as card enters viewport
+  const y = useTransform(scrollYProgress, [0, 1], ["100%", "0%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0, 1, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
 
   return (
-    <motion.div
-      style={{ y, opacity, scale }}
-      className="sticky top-28 h-[60vh] min-h-[420px] w-full rounded-3xl overflow-hidden"
+    <div
+      ref={cardRef}
+      className="sticky top-56 w-full h-[60vh] min-h-[420px] rounded-3xl overflow-hidden"
     >
-      <div
+      <motion.div
+        style={{ y, opacity, scale }}
         className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
       >
         {/* Project image/icon area */}
@@ -196,8 +180,8 @@ function OverlappingCard({
             </svg>
           </motion.button>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -205,7 +189,6 @@ export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("competition");
   const [showMore, setShowMore] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const overlapScrollRef = useRef<HTMLDivElement>(null);
 
   // Filter projects by active category
   const filteredProjects = PROJECTS.filter(
@@ -217,21 +200,6 @@ export default function Portfolio() {
 
   // Remaining projects for scroll overlap (index 1+)
   const remainingProjects = filteredProjects.slice(1);
-
-  // Scroll animation for overlapping cards (only if there are remaining projects)
-  const { scrollYProgress } = useScroll({
-    target: overlapScrollRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 30,
-    damping: 20,
-    restDelta: 0.001,
-  });
-
-  // Grid projects are all projects, hidden behind "See More Details"
-  const gridProjects = PROJECTS;
 
   return (
     <section
@@ -349,25 +317,12 @@ export default function Portfolio() {
           </motion.div>
         )}
 
-        {/* Scroll-overlap section for remaining projects (2nd project onward) */}
+        {/* Overlap section — each card uses individual sticky so they all converge */}
         {remainingProjects.length > 0 && (
-          <div
-            ref={overlapScrollRef}
-            className="relative mb-16"
-            style={{ height: `${remainingProjects.length * 100}vh` }}
-          >
-            <div className="sticky top-0 h-screen flex items-center py-24">
-              <div className="w-full space-y-6">
-                {remainingProjects.map((project, idx) => (
-                  <OverlappingCard
-                    key={project.id}
-                    project={project}
-                    index={idx}
-                    scrollProgress={smoothProgress}
-                  />
-                ))}
-              </div>
-            </div>
+          <div className="relative mb-16" style={{ height: `${remainingProjects.length * 110}vh` }}>
+            {remainingProjects.map((project) => (
+              <OverlappingCard key={project.id} project={project} />
+            ))}
           </div>
         )}
 
@@ -424,7 +379,7 @@ export default function Portfolio() {
         >
           {showMore && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {gridProjects.map((project, index) => (
+              {PROJECTS.map((project, index) => (
                 <motion.div
                   key={project.id}
                   initial={{ opacity: 0, y: 30 }}

@@ -9,11 +9,10 @@ import {
 } from "framer-motion";
 
 const CATEGORIES = [
-  { id: "all", label: "All Projects" },
-  { id: "competition", label: "Competition" },
-  { id: "data-analysis", label: "Data Analysis" },
-  { id: "web-dev", label: "Web Development" },
-  { id: "ai-dev", label: "AI Development" },
+  { id: "competition", label: "Competition Project" },
+  { id: "data-analysis", label: "Data Analysis Project" },
+  { id: "web-dev", label: "Web Development Project" },
+  { id: "ai-dev", label: "AI Development Project" },
 ];
 
 const PROJECTS = [
@@ -107,9 +106,11 @@ const PROJECTS = [
   },
 ];
 
+// The first 4 projects are used for the overlap section
+// Project 1 is always visible (fixed), projects 2-4 use scroll-overlap
 const OVERLAY_PROJECTS = PROJECTS.slice(0, 4);
 
-function ProjectSlide({
+function OverlappingCard({
   project,
   index,
   scrollProgress,
@@ -118,8 +119,10 @@ function ProjectSlide({
   index: number;
   scrollProgress: any;
 }) {
-  const progressStart = index / OVERLAY_PROJECTS.length;
-  const progressEnd = (index + 1) / OVERLAY_PROJECTS.length;
+  // Index-0 is the first overlapped card (project #2, index=0 in this context)
+  const total = OVERLAY_PROJECTS.length - 1; // 3 animated cards
+  const progressStart = index / total;
+  const progressEnd = (index + 1) / total;
 
   const y = useTransform(
     scrollProgress,
@@ -134,26 +137,26 @@ function ProjectSlide({
   const scale = useTransform(
     scrollProgress,
     [progressStart, progressEnd],
-    [0.8, 1]
+    [0.85, 1]
   );
 
   return (
     <motion.div
       style={{ y, opacity, scale }}
-      className="sticky top-24 h-[70vh] min-h-[500px] w-full rounded-3xl overflow-hidden"
+      className="sticky top-28 h-[60vh] min-h-[420px] w-full rounded-3xl overflow-hidden"
     >
       <div
         className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
       >
         {/* Project image/icon area */}
-        <div className="w-full md:w-1/2 h-48 md:h-full flex items-center justify-center">
-          <div className="text-[8rem] md:text-[12rem] leading-none select-none">
+        <div className="w-full md:w-1/2 h-40 md:h-full flex items-center justify-center">
+          <div className="text-[6rem] md:text-[10rem] leading-none select-none">
             {project.image}
           </div>
         </div>
 
         {/* Project info */}
-        <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
+        <div className="w-full md:w-1/2 space-y-4 md:space-y-5">
           <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
             {CATEGORIES.find((c) => c.id === project.category)?.label}
           </div>
@@ -199,19 +202,25 @@ function ProjectSlide({
 }
 
 export default function Portfolio() {
-  const [activeCategory, setActiveCategory] =
-    useState<string>("all");
+  const [activeCategory, setActiveCategory] = useState<string>("competition");
+  const [showMore, setShowMore] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const overlapScrollRef = useRef<HTMLDivElement>(null);
 
-  const filteredProjects =
-    activeCategory === "all"
-      ? PROJECTS
-      : PROJECTS.filter((p) => p.category === activeCategory);
+  // Filter projects by active category
+  const filteredProjects = PROJECTS.filter(
+    (p) => p.category === activeCategory
+  );
 
-  // Scroll animation for overlay cards
+  // First project in filtered list (always visible)
+  const firstProject = filteredProjects[0];
+
+  // Remaining projects for scroll overlap (index 1+)
+  const remainingProjects = filteredProjects.slice(1);
+
+  // Scroll animation for overlapping cards (only if there are remaining projects)
   const { scrollYProgress } = useScroll({
-    target: overlayRef,
+    target: overlapScrollRef,
     offset: ["start start", "end end"],
   });
 
@@ -220,6 +229,9 @@ export default function Portfolio() {
     damping: 20,
     restDelta: 0.001,
   });
+
+  // Grid projects are all projects, hidden behind "See More Details"
+  const gridProjects = PROJECTS;
 
   return (
     <section
@@ -239,7 +251,7 @@ export default function Portfolio() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
           <span className="text-sm uppercase tracking-[0.3em] text-primary font-medium">
             My Work
@@ -253,29 +265,13 @@ export default function Portfolio() {
           </p>
         </motion.div>
 
-        {/* Overlapping cards showcase */}
-        <div ref={overlayRef} className="relative mb-24" style={{ height: `${OVERLAY_PROJECTS.length * 100}vh` }}>
-          <div className="sticky top-0 h-screen flex items-center py-24">
-            <div className="w-full space-y-6">
-              {OVERLAY_PROJECTS.map((project, index) => (
-                <ProjectSlide
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  scrollProgress={smoothProgress}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Category Filter */}
+        {/* Category Filter - 4 tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-2 mb-12"
+          className="flex flex-wrap justify-center gap-2 md:gap-3 mb-10"
         >
           {CATEGORIES.map((cat) => (
             <button
@@ -292,43 +288,178 @@ export default function Portfolio() {
           ))}
         </motion.div>
 
-        {/* Grid projects */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              layout
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -4 }}
-              className={`group rounded-2xl border ${project.borderColor} ${project.color} bg-white/60 backdrop-blur-sm p-6 md:p-8 cursor-pointer transition-shadow duration-300 hover:shadow-xl`}
+        {/* First project - always visible (no scroll animation) */}
+        {firstProject && (
+          <motion.div
+            key={`fixed-${firstProject.id}`}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full rounded-3xl border overflow-hidden mb-8"
+          >
+            <div
+              className={`w-full border ${firstProject.borderColor} ${firstProject.color} bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg rounded-3xl`}
             >
-              <div className="flex items-start justify-between mb-4">
-                <span className="text-4xl">{project.image}</span>
-                <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                  {CATEGORIES.find((c) => c.id === project.category)?.label}
-                </span>
+              <div className="w-full md:w-1/2 h-40 md:h-64 flex items-center justify-center">
+                <div className="text-[6rem] md:text-[10rem] leading-none select-none">
+                  {firstProject.image}
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                {project.title}
-              </h3>
-              <p className="text-textSecondary text-sm leading-relaxed mb-4">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2.5 py-1 bg-gray-100/80 rounded-full text-xs font-medium text-gray-500"
+              <div className="w-full md:w-1/2 space-y-4 md:space-y-5">
+                <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
+                  {CATEGORIES.find((c) => c.id === firstProject.category)?.label}
+                </div>
+                <h3 className="text-2xl md:text-4xl font-bold text-gray-900">
+                  {firstProject.title}
+                </h3>
+                <p className="text-textSecondary text-sm md:text-base leading-relaxed">
+                  {firstProject.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {firstProject.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <motion.button
+                  whileHover={{ x: 5 }}
+                  className="inline-flex items-center gap-2 text-primary font-medium text-sm group"
+                >
+                  View Project
+                  <svg
+                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {tag}
-                  </span>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Scroll-overlap section for remaining projects (2nd project onward) */}
+        {remainingProjects.length > 0 && (
+          <div
+            ref={overlapScrollRef}
+            className="relative mb-16"
+            style={{ height: `${remainingProjects.length * 100}vh` }}
+          >
+            <div className="sticky top-0 h-screen flex items-center py-24">
+              <div className="w-full space-y-6">
+                {remainingProjects.map((project, idx) => (
+                  <OverlappingCard
+                    key={project.id}
+                    project={project}
+                    index={idx}
+                    scrollProgress={smoothProgress}
+                  />
                 ))}
               </div>
-            </motion.div>
-          ))}
+            </div>
+          </div>
+        )}
+
+        {/* No projects fallback */}
+        {!firstProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-16"
+          >
+            <p className="text-textSecondary text-lg">
+              No projects in this category yet. Check back soon!
+            </p>
+          </motion.div>
+        )}
+
+        {/* See More Details toggle */}
+        <div className="mt-12 text-center">
+          <motion.button
+            onClick={() => setShowMore(!showMore)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
+          >
+            <span>{showMore ? "Show Less" : "See More Details"}</span>
+            <motion.svg
+              animate={{ rotate: showMore ? 180 : 0 }}
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </motion.svg>
+          </motion.button>
+        </div>
+
+        {/* Grid projects - hidden by default */}
+        <motion.div
+          layout
+          initial={false}
+          animate={{
+            height: showMore ? "auto" : 0,
+            opacity: showMore ? 1 : 0,
+            marginTop: showMore ? 32 : 0,
+          }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="overflow-hidden"
+        >
+          {showMore && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {gridProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  whileHover={{ y: -4 }}
+                  className={`group rounded-2xl border ${project.borderColor} ${project.color} bg-white/60 backdrop-blur-sm p-6 md:p-8 cursor-pointer transition-shadow duration-300 hover:shadow-xl`}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-4xl">{project.image}</span>
+                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      {CATEGORIES.find((c) => c.id === project.category)
+                        ?.label || project.category}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-textSecondary text-sm leading-relaxed mb-4">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-1 bg-gray-100/80 rounded-full text-xs font-medium text-gray-500"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

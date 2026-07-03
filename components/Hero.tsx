@@ -37,24 +37,41 @@ export default function Hero() {
     offset: ["start start", "end start"],
   });
 
-  // Card transforms based on scroll progress
-  const card1X = useTransform(scrollYProgress, [0, 0.6, 1], ["0%", "-20%", "-35%"]);
-  const card2Y = useTransform(scrollYProgress, [0, 0.8, 1], ["0%", "-5%", "0%"]);
-  const card3X = useTransform(scrollYProgress, [0, 0.6, 1], ["0%", "20%", "35%"]);
+  // Card transforms - spread into a line on scroll
+  // Card 1 moves far left, Card 2 stays centered, Card 3 moves far right
+  const card1X = useTransform(
+    scrollYProgress,
+    [0, 0.6, 0.9],
+    ["0px", "-280px", "-420px"]
+  );
+  const card2Y = useTransform(
+    scrollYProgress,
+    [0, 0.6, 1],
+    ["0px", "-20px", "0px"]
+  );
+  const card3X = useTransform(
+    scrollYProgress,
+    [0, 0.6, 0.9],
+    ["0px", "280px", "420px"]
+  );
 
-  const card1Scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.95, 0.85]);
-  const card3Scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.95, 0.85]);
+  const card1Scale = useTransform(scrollYProgress, [0, 0.7], [1, 0.92]);
+  const card3Scale = useTransform(scrollYProgress, [0, 0.7], [1, 0.92]);
 
-  const card1Rotate = useTransform(scrollYProgress, [0, 1], ["-3deg", "0deg"]);
-  const card2Rotate = useTransform(scrollYProgress, [0, 1], ["2deg", "0deg"]);
-  const card3Rotate = useTransform(scrollYProgress, [0, 1], ["-1.5deg", "0deg"]);
+  const card1Rotate = useTransform(scrollYProgress, [0, 1], ["-2deg", "0deg"]);
+  const card2Rotate = useTransform(scrollYProgress, [0, 1], ["0deg", "0deg"]);
+  const card3Rotate = useTransform(scrollYProgress, [0, 1], ["2deg", "0deg"]);
 
-  const card1Z = useTransform(scrollYProgress, [0, 0.3, 1], [30, 20, 0]);
-  const card2Z = useTransform(scrollYProgress, [0, 0.3, 1], [20, 10, 0]);
-  const card3Z = useTransform(scrollYProgress, [0, 0.3, 1], [10, 5, 0]);
+  const card1Z = useTransform(scrollYProgress, [0, 0.3, 0.7], [30, 20, 10]);
+  const card2Z = useTransform(scrollYProgress, [0, 0.3, 0.7], [20, 15, 10]);
+  const card3Z = useTransform(scrollYProgress, [0, 0.3, 0.7], [10, 10, 10]);
 
-  const opacity = useTransform(scrollYProgress, [0, 0.8, 0.95, 1], [1, 1, 0.8, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.7, 0.9, 1],
+    [1, 1, 0.6, 0]
+  );
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.93]);
 
   const handleCardClick = (title: string) => {
     const sectionMap: Record<string, string> = {
@@ -69,11 +86,7 @@ export default function Hero() {
   };
 
   return (
-    <section
-      id="hero"
-      ref={containerRef}
-      className="relative min-h-[200vh]"
-    >
+    <section id="hero" ref={containerRef} className="relative min-h-[200vh]">
       {/* Sticky content container */}
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
         {/* Background gradient orbs */}
@@ -130,9 +143,9 @@ export default function Hero() {
             </motion.p>
           </motion.div>
 
-          {/* Cards - stacked by default, spread on scroll */}
-          <div className="relative h-[320px] md:h-[360px] flex items-center justify-center">
-            {/* Card 1 - Portfolio */}
+          {/* Cards - stacked by default, spread into a line on scroll */}
+          <div className="relative h-[340px] md:h-[380px] flex items-center justify-center">
+            {/* Card 1 - Portfolio (moves left) */}
             <motion.div
               style={{
                 x: card1X,
@@ -141,23 +154,24 @@ export default function Hero() {
                 zIndex: card1Z,
               }}
               onClick={() => handleCardClick("My Portfolio")}
-              className={`absolute w-[280px] md:w-[320px] h-[280px] md:h-[320px] rounded-2xl bg-gradient-to-br ${CARD_DATA[0].color} p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between`}
+              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
             >
-              <div className="text-3xl md:text-4xl">{CARD_DATA[0].icon}</div>
+              <div className="text-3xl md:text-4xl">🎨</div>
               <div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
-                  {CARD_DATA[0].title}
+                  My Portfolio
                 </h3>
                 <p className="text-white/80 text-sm md:text-base">
-                  {CARD_DATA[0].description}
+                  Explore my projects across competitions, data analysis, web
+                  development, and AI.
                 </p>
                 <p className="text-white/60 text-xs mt-3 font-medium uppercase tracking-wider">
-                  {CARD_DATA[0].subtitle} →
+                  View My Work →
                 </p>
               </div>
             </motion.div>
 
-            {/* Card 2 - About Me */}
+            {/* Card 2 - About Me (stays centered, slight float) */}
             <motion.div
               style={{
                 y: card2Y,
@@ -165,23 +179,24 @@ export default function Hero() {
                 zIndex: card2Z,
               }}
               onClick={() => handleCardClick("About Me")}
-              className={`absolute w-[280px] md:w-[320px] h-[280px] md:h-[320px] rounded-2xl bg-gradient-to-br ${CARD_DATA[1].color} p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between`}
+              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
             >
-              <div className="text-3xl md:text-4xl">{CARD_DATA[1].icon}</div>
+              <div className="text-3xl md:text-4xl">👩‍💻</div>
               <div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
-                  {CARD_DATA[1].title}
+                  About Me
                 </h3>
                 <p className="text-white/80 text-sm md:text-base">
-                  {CARD_DATA[1].description}
+                  Business Analytics & Computer Science double major with a
+                  passion for tech innovation.
                 </p>
                 <p className="text-white/60 text-xs mt-3 font-medium uppercase tracking-wider">
-                  {CARD_DATA[1].subtitle} →
+                  Get to Know Me →
                 </p>
               </div>
             </motion.div>
 
-            {/* Card 3 - Contact */}
+            {/* Card 3 - Contact (moves right) */}
             <motion.div
               style={{
                 x: card3X,
@@ -190,18 +205,19 @@ export default function Hero() {
                 zIndex: card3Z,
               }}
               onClick={() => handleCardClick("Contact Me")}
-              className={`absolute w-[280px] md:w-[320px] h-[280px] md:h-[320px] rounded-2xl bg-gradient-to-br ${CARD_DATA[2].color} p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between`}
+              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
             >
-              <div className="text-3xl md:text-4xl">{CARD_DATA[2].icon}</div>
+              <div className="text-3xl md:text-4xl">📬</div>
               <div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
-                  {CARD_DATA[2].title}
+                  Contact Me
                 </h3>
                 <p className="text-white/80 text-sm md:text-base">
-                  {CARD_DATA[2].description}
+                  Have a project in mind? I&apos;d love to hear from you. Reach
+                  out anytime!
                 </p>
                 <p className="text-white/60 text-xs mt-3 font-medium uppercase tracking-wider">
-                  {CARD_DATA[2].subtitle} →
+                  Let&apos;s Connect →
                 </p>
               </div>
             </motion.div>
@@ -221,12 +237,7 @@ export default function Hero() {
             className="flex flex-col items-center gap-2 text-textSecondary"
           >
             <span className="text-xs tracking-widest uppercase">Scroll</span>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

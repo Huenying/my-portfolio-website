@@ -24,8 +24,8 @@ const PROJECTS = [
       "Led a team of 4 to develop an AI-powered financial literacy platform. Won 2nd place in the university-wide FinTech competition.",
     image: "📊",
     tags: ["Python", "Machine Learning", "Team Leadership"],
-    color: "from-violet-500/20 to-purple-500/10",
-    borderColor: "border-violet-500/30",
+    color: "from-[#3A5A4A]/20 to-[#2E4038]/10",
+    borderColor: "border-[#3A5A4A]/30",
   },
   {
     id: 2,
@@ -35,8 +35,8 @@ const PROJECTS = [
       "Comprehensive analysis of Hong Kong's property market trends using 10+ years of transactional data. Built interactive dashboards for visualization.",
     image: "🏠",
     tags: ["Python", "Pandas", "Tableau", "SQL"],
-    color: "from-blue-500/20 to-cyan-500/10",
-    borderColor: "border-blue-500/30",
+    color: "from-[#B2C9B0]/20 to-[#6B8F7B]/10",
+    borderColor: "border-[#B2C9B0]/30",
   },
   {
     id: 3,
@@ -46,8 +46,8 @@ const PROJECTS = [
       "Full-stack e-commerce platform with real-time inventory management, payment integration, and responsive design. Built for a local retail business.",
     image: "🛒",
     tags: ["React", "Next.js", "Node.js", "MongoDB"],
-    color: "from-emerald-500/20 to-teal-500/10",
-    borderColor: "border-emerald-500/30",
+    color: "from-[#6B8F7B]/20 to-[#3A5A4A]/10",
+    borderColor: "border-[#6B8F7B]/30",
   },
   {
     id: 4,
@@ -57,8 +57,8 @@ const PROJECTS = [
       "Developed a context-aware chatbot using LLMs for customer service automation. Achieved 85% resolution rate in pilot testing.",
     image: "🤖",
     tags: ["Python", "LangChain", "OpenAI", "FastAPI"],
-    color: "from-orange-500/20 to-amber-500/10",
-    borderColor: "border-orange-500/30",
+    color: "from-[#D99A3C]/20 to-[#C4882E]/10",
+    borderColor: "border-[#D99A3C]/30",
   },
   {
     id: 5,
@@ -68,8 +68,8 @@ const PROJECTS = [
       "Won Best Innovation Award at a 48-hour data science hackathon. Built a predictive model for traffic flow optimization using real-time sensor data.",
     image: "🏆",
     tags: ["Python", "Scikit-learn", "Time Series", "API"],
-    color: "from-pink-500/20 to-rose-500/10",
-    borderColor: "border-pink-500/30",
+    color: "from-[#3A5A4A]/20 to-[#2E4038]/10",
+    borderColor: "border-[#3A5A4A]/30",
   },
   {
     id: 6,
@@ -79,8 +79,8 @@ const PROJECTS = [
       "Built a machine learning pipeline to predict customer churn for a telecom company. Achieved 92% accuracy with feature engineering.",
     image: "📈",
     tags: ["Python", "XGBoost", "Feature Engineering", "SHAP"],
-    color: "from-indigo-500/20 to-violet-500/10",
-    borderColor: "border-indigo-500/30",
+    color: "from-[#B2C9B0]/20 to-[#6B8F7B]/10",
+    borderColor: "border-[#B2C9B0]/30",
   },
   {
     id: 7,
@@ -90,8 +90,8 @@ const PROJECTS = [
       "A drag-and-drop portfolio builder with customizable templates, real-time preview, and one-click deployment. Used by 200+ students.",
     image: "🌐",
     tags: ["React", "TypeScript", "Tailwind CSS", "Firebase"],
-    color: "from-sky-500/20 to-blue-500/10",
-    borderColor: "border-sky-500/30",
+    color: "from-[#6B8F7B]/20 to-[#3A5A4A]/10",
+    borderColor: "border-[#6B8F7B]/30",
   },
   {
     id: 8,
@@ -101,8 +101,8 @@ const PROJECTS = [
       "Real-time object detection system using YOLOv8 for warehouse inventory management. Reduced manual counting time by 75%.",
     image: "👁️",
     tags: ["Python", "YOLOv8", "OpenCV", "PyTorch"],
-    color: "from-red-500/20 to-rose-500/10",
-    borderColor: "border-red-500/30",
+    color: "from-[#D99A3C]/20 to-[#C4882E]/10",
+    borderColor: "border-[#D99A3C]/30",
   },
 ];
 

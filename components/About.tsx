@@ -38,13 +38,13 @@ const EXPERIENCES = [
 ];
 
 const SKILLS = [
-  { name: "Python", level: 90, color: "from-blue-500 to-cyan-500" },
-  { name: "TypeScript", level: 85, color: "from-sky-500 to-blue-500" },
-  { name: "React / Next.js", level: 85, color: "from-cyan-400 to-teal-500" },
-  { name: "SQL", level: 80, color: "from-amber-400 to-orange-500" },
-  { name: "Machine Learning", level: 75, color: "from-violet-500 to-purple-600" },
-  { name: "Data Visualization", level: 80, color: "from-emerald-400 to-teal-500" },
-  { name: "Tailwind CSS", level: 85, color: "from-teal-400 to-cyan-500" },
+  { name: "Python", level: 90, color: "from-[#3A5A4A] to-[#6B8F7B]" },
+  { name: "TypeScript", level: 85, color: "from-[#6B8F7B] to-[#B2C9B0]" },
+  { name: "React / Next.js", level: 85, color: "from-[#3A5A4A] to-[#2E4038]" },
+  { name: "SQL", level: 80, color: "from-[#D99A3C] to-[#C4882E]" },
+  { name: "Machine Learning", level: 75, color: "from-[#6B8F7B] to-[#3A5A4A]" },
+  { name: "Data Visualization", level: 80, color: "from-[#B2C9B0] to-[#6B8F7B]" },
+  { name: "Tailwind CSS", level: 85, color: "from-[#3A5A4A] to-[#B2C9B0]" },
   { name: "Git / GitHub", level: 80, color: "from-gray-500 to-gray-700" },
 ];
 

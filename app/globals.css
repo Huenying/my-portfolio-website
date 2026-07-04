@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf9f6;
-  --foreground: #1e1e2a;
+  --background: #F4F1EA;
+  --foreground: #1A2D28;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-primary: #7c3aed;
-  --color-primary-light: #a78bfa;
-  --color-primary-dark: #5b21b6;
-  --color-secondary: #06b6d4;
-  --color-secondary-light: #67e8f9;
-  --color-accent: #f59e0b;
-  --color-surface: #ffffff;
-  --color-muted: #f1f0f6;
-  --color-textSecondary: #6b7280;
+  --color-primary: #3A5A4A;
+  --color-primary-light: #B2C9B0;
+  --color-primary-dark: #2E4038;
+  --color-secondary: #6B8F7B;
+  --color-secondary-light: #C8DBC5;
+  --color-accent: #D99A3C;
+  --color-surface: #FAF8F3;
+  --color-muted: #E8E4DA;
+  --color-textSecondary: #5A6B63;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -51,5 +51,5 @@ body {
 /* Selection color */
 ::selection {
   background: var(--color-primary-light);
-  color: white;
+  color: #1A2D28;
 }

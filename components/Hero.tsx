@@ -103,7 +103,7 @@ export default function Hero() {
             <motion.div
               style={{ x: card1X, scale: card1Scale, rotate: card1Rotate, zIndex: card1Z }}
               onClick={() => handleCardClick("My Portfolio")}
-              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
+              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-[#3A5A4A] to-[#2E4038] p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
             >
               <div className="text-3xl md:text-4xl">🎨</div>
               <div>
@@ -119,7 +119,7 @@ export default function Hero() {
             <motion.div
               style={{ y: card2Y, zIndex: card2Z }}
               onClick={() => handleCardClick("About Me")}
-              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
+              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-[#6B8F7B] to-[#B2C9B0] p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
             >
               <div className="text-3xl md:text-4xl">👩‍💻</div>
               <div>
@@ -135,7 +135,7 @@ export default function Hero() {
             <motion.div
               style={{ x: card3X, scale: card3Scale, rotate: card3Rotate, zIndex: card3Z }}
               onClick={() => handleCardClick("Contact Me")}
-              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
+              className="absolute w-[260px] md:w-[300px] h-[260px] md:h-[300px] rounded-2xl bg-gradient-to-br from-[#D99A3C] to-[#C4882E] p-6 md:p-8 cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between"
             >
               <div className="text-3xl md:text-4xl">📬</div>
               <div>

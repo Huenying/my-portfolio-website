@@ -43,17 +43,11 @@ export default function Hero() {
   return (
     <section id="hero" ref={containerRef} className="relative min-h-[200vh]">
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Background gradient orbs */}
+        {/* Background image */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 180] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          />
-          <motion.div
-            className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"
-            animate={{ scale: [1.2, 1, 1.2], rotate: [180, 90, 0] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+            style={{ backgroundImage: "url('/hero-bg.jpg')" }}
           />
         </div>
 

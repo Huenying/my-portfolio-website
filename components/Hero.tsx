@@ -46,7 +46,7 @@ export default function Hero() {
         {/* Background image */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
             style={{ backgroundImage: "url('/hero-bg.jpg')" }}
           />
         </div>
@@ -63,7 +63,7 @@ export default function Hero() {
             className="text-center mb-12"
           >
             <motion.p
-              className="text-sm uppercase tracking-[0.3em] text-primary font-medium mb-4"
+              className="text-sm uppercase tracking-[0.3em] text-white font-medium mb-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
@@ -71,18 +71,18 @@ export default function Hero() {
               Welcome to my portfolio
             </motion.p>
             <motion.h1
-              className="text-5xl md:text-7xl font-bold mb-4"
+              className="text-5xl md:text-7xl font-bold mb-4 text-white"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
               Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">
                 Cynthia
               </span>
             </motion.h1>
             <motion.p
-              className="text-lg md:text-xl text-textSecondary max-w-2xl mx-auto"
+              className="text-lg md:text-xl text-white max-w-2xl mx-auto font-bold"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -153,7 +153,7 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2 text-textSecondary"
+            className="flex flex-col items-center gap-2 text-white/60"
           >
             <span className="text-xs tracking-widest uppercase">Scroll</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

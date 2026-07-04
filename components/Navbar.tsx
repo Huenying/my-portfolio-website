@@ -52,15 +52,7 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <button
-          onClick={() => handleClick("#hero")}
-          className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
-        >
-          Cynthia
-        </button>
-
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-end">
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">
           {NAV_ITEMS.map((item) => (
@@ -69,8 +61,12 @@ export default function Navbar() {
               onClick={() => handleClick(item.href)}
               className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                 activeSection === item.href.slice(1)
-                  ? "text-primary"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? scrolled
+                    ? "text-primary"
+                    : "text-white"
+                  : scrolled
+                    ? "text-gray-600 hover:text-gray-900"
+                    : "text-white/70 hover:text-white"
               }`}
             >
               {item.label}

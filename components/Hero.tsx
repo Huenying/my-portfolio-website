@@ -1,7 +1,46 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+
+function TypewriterText({ text }: { text: string }) {
+  const [displayed, setDisplayed] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timeout = setTimeout(
+      () => {
+        if (!isDeleting) {
+          if (index < text.length) {
+            setDisplayed(text.slice(0, index + 1));
+            setIndex(index + 1);
+          } else {
+            // Pause at full word, then start deleting
+            setTimeout(() => setIsDeleting(true), 1500);
+          }
+        } else {
+          if (index > 0) {
+            setDisplayed(text.slice(0, index - 1));
+            setIndex(index - 1);
+          } else {
+            // Reset to type again
+            setIsDeleting(false);
+          }
+        }
+      },
+      isDeleting ? 50 : 100
+    );
+    return () => clearTimeout(timeout);
+  }, [index, isDeleting, text]);
+
+  return (
+    <span>
+      {displayed}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+}
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -77,8 +116,8 @@ export default function Hero() {
               transition={{ delay: 0.4, duration: 0.8 }}
             >
               Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">
-                Cynthia
+              <span className="bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent" style={{ fontFamily: "'Courier New', Courier, monospace", fontWeight: 900 }}>
+                <TypewriterText text="Cynthia" />
               </span>
             </motion.h1>
             <motion.p

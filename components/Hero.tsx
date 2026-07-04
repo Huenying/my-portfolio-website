@@ -47,7 +47,7 @@ export default function Hero() {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
-            style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+            style={{ backgroundImage: `url('${process.env.NODE_ENV === "production" ? "/my-portfolio-website/hero-bg.jpg" : "/hero-bg.jpg"}')` }}
           />
         </div>
 

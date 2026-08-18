@@ -1,251 +1,72 @@
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-} from "framer-motion";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { CATEGORIES, PROJECTS, type CategoryId, type Project } from "./projects";
+import ReaderMachine from "./ReaderMachine";
+import ProjectCard from "./ProjectCard";
+import ProjectModal from "./ProjectModal";
 
-const CATEGORIES = [
-  { id: "competition", label: "Competition Project" },
-  { id: "data-analysis", label: "Data Analysis Project" },
-  { id: "web-dev", label: "Web Development Project" },
-  { id: "ai-dev", label: "AI Development Project" },
-];
+type TabId = "all" | CategoryId;
 
-const PROJECTS = [
-  {
-    id: 1,
-    title: "FinTech Innovation Challenge",
-    category: "competition",
-    description:
-      "Led a team of 4 to develop an AI-powered financial literacy platform. Won 2nd place in the university-wide FinTech competition.",
-    image: "📊",
-    tags: ["Python", "Machine Learning", "Team Leadership"],
-    color: "from-[#3A5A4A]/20 to-[#2E4038]/10",
-    borderColor: "border-[#3A5A4A]/30",
-  },
-  {
-    id: 2,
-    title: "HK Housing Market Analysis",
-    category: "data-analysis",
-    description:
-      "Comprehensive analysis of Hong Kong's property market trends using 10+ years of transactional data. Built interactive dashboards for visualization.",
-    image: "🏠",
-    tags: ["Python", "Pandas", "Tableau", "SQL"],
-    color: "from-[#B2C9B0]/20 to-[#6B8F7B]/10",
-    borderColor: "border-[#B2C9B0]/30",
-  },
-  {
-    id: 3,
-    title: "E-Commerce Platform",
-    category: "web-dev",
-    description:
-      "Full-stack e-commerce platform with real-time inventory management, payment integration, and responsive design. Built for a local retail business.",
-    image: "🛒",
-    tags: ["React", "Next.js", "Node.js", "MongoDB"],
-    color: "from-[#6B8F7B]/20 to-[#3A5A4A]/10",
-    borderColor: "border-[#6B8F7B]/30",
-  },
-  {
-    id: 4,
-    title: "AI-Powered Chat Assistant",
-    category: "ai-dev",
-    description:
-      "Developed a context-aware chatbot using LLMs for customer service automation. Achieved 85% resolution rate in pilot testing.",
-    image: "🤖",
-    tags: ["Python", "LangChain", "OpenAI", "FastAPI"],
-    color: "from-[#D99A3C]/20 to-[#C4882E]/10",
-    borderColor: "border-[#D99A3C]/30",
-  },
-  {
-    id: 5,
-    title: "Data Science Hackathon",
-    category: "competition",
-    description:
-      "Won Best Innovation Award at a 48-hour data science hackathon. Built a predictive model for traffic flow optimization using real-time sensor data.",
-    image: "🏆",
-    tags: ["Python", "Scikit-learn", "Time Series", "API"],
-    color: "from-[#3A5A4A]/20 to-[#2E4038]/10",
-    borderColor: "border-[#3A5A4A]/30",
-  },
-  {
-    id: 6,
-    title: "Customer Churn Prediction",
-    category: "data-analysis",
-    description:
-      "Built a machine learning pipeline to predict customer churn for a telecom company. Achieved 92% accuracy with feature engineering.",
-    image: "📈",
-    tags: ["Python", "XGBoost", "Feature Engineering", "SHAP"],
-    color: "from-[#B2C9B0]/20 to-[#6B8F7B]/10",
-    borderColor: "border-[#B2C9B0]/30",
-  },
-  {
-    id: 7,
-    title: "Portfolio Website Builder",
-    category: "web-dev",
-    description:
-      "A drag-and-drop portfolio builder with customizable templates, real-time preview, and one-click deployment. Used by 200+ students.",
-    image: "🌐",
-    tags: ["React", "TypeScript", "Tailwind CSS", "Firebase"],
-    color: "from-[#6B8F7B]/20 to-[#3A5A4A]/10",
-    borderColor: "border-[#6B8F7B]/30",
-  },
-  {
-    id: 8,
-    title: "Computer Vision Object Detection",
-    category: "ai-dev",
-    description:
-      "Real-time object detection system using YOLOv8 for warehouse inventory management. Reduced manual counting time by 75%.",
-    image: "👁️",
-    tags: ["Python", "YOLOv8", "OpenCV", "PyTorch"],
-    color: "from-[#D99A3C]/20 to-[#C4882E]/10",
-    borderColor: "border-[#D99A3C]/30",
-  },
-];
-
-function ProjectCardContent({
-  project,
-}: {
-  project: (typeof PROJECTS)[0];
-}) {
-  return (
-    <div
-      className={`w-full h-full rounded-3xl border ${project.borderColor} ${project.color} bg-white p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-lg`}
-    >
-      <div className="w-full md:w-1/2 h-40 md:h-full flex items-center justify-center">
-        <div className="text-[6rem] md:text-[10rem] leading-none select-none">
-          {project.image}
-        </div>
-      </div>
-      <div className="w-full md:w-1/2 space-y-4 md:space-y-5">
-        <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider">
-          {CATEGORIES.find((c) => c.id === project.category)?.label}
-        </div>
-        <h3 className="text-2xl md:text-4xl font-bold text-gray-900">
-          {project.title}
-        </h3>
-        <p className="text-textSecondary text-sm md:text-base leading-relaxed">
-          {project.description}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        <motion.button
-          whileHover={{ x: 5 }}
-          className="inline-flex items-center gap-2 text-primary font-medium text-sm group"
-        >
-          View Project
-          <svg
-            className="w-4 h-4 transition-transform group-hover:translate-x-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 8l4 4m0 0l-4 4m4-4H3"
-            />
-          </svg>
-        </motion.button>
-      </div>
-    </div>
-  );
-}
-
-/** A single overlapping card that slides up to cover the first project */
-function OverlapProjectCard({
-  project,
-  index,
-  total,
-  scrollProgress,
-}: {
-  project: (typeof PROJECTS)[0];
-  index: number;
-  total: number;
-  scrollProgress: any;
-}) {
-  // Each card slides up in sequence
-  // Card N starts sliding when Card N-1 has reached its midpoint
-  const progressStart = index / total;
-  const progressEnd = (index + 1) / total;
-
-  // Start slightly before 50% progress, end at ~85%
-  const slideStart = progressStart * 0.5 + 0.15;
-  const slideEnd = progressEnd * 0.6 + 0.15;
-
-  const y = useTransform(
-    scrollProgress,
-    [slideStart, slideEnd],
-    ["100%", "0%"]
-  );
-  const opacity = useTransform(
-    scrollProgress,
-    [slideStart - 0.05, slideStart, slideEnd],
-    [0, 1, 1]
-  );
-  const scale = useTransform(
-    scrollProgress,
-    [slideStart, slideEnd],
-    [0.85, 1]
-  );
-
-  return (
-    <motion.div
-      style={{ y, opacity, scale }}
-      className="absolute inset-0 z-20 rounded-3xl overflow-hidden pointer-events-auto"
-    >
-      <ProjectCardContent project={project} />
-    </motion.div>
-  );
-}
+/** Shortened labels for the compact tab bar (full labels live on the cards). */
+const TAB_LABELS: Record<CategoryId, string> = {
+  competition: "Competition",
+  "data-analysis": "Data Analysis",
+  "web-dev": "Web Dev",
+  "ai-dev": "AI Dev",
+};
 
 export default function Portfolio() {
-  const [activeCategory, setActiveCategory] = useState<string>("competition");
-  const [showMore, setShowMore] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const stackRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<TabId>("all");
+  const [hoveredProject, setHoveredProject] = useState<Project | null>(null);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [interacted, setInteracted] = useState(false);
 
-  // Filter projects by active category
-  const filteredProjects = PROJECTS.filter(
-    (p) => p.category === activeCategory
+  const tabs = useMemo(
+    () => [
+      { id: "all" as const, label: "All", count: PROJECTS.length },
+      ...CATEGORIES.map((c) => ({
+        id: c.id,
+        label: TAB_LABELS[c.id],
+        count: PROJECTS.filter((p) => p.category === c.id).length,
+      })),
+    ],
+    []
   );
 
-  // First project in filtered list (always visible)
-  const firstProject = filteredProjects[0];
+  const groups = useMemo(
+    () =>
+      CATEGORIES.map((cat) => ({
+        cat,
+        projects: PROJECTS.filter((p) => p.category === cat.id),
+      })).filter((g) => g.projects.length > 0),
+    []
+  );
 
-  // Remaining projects for scroll overlap (index 1+)
-  const remainingProjects = filteredProjects.slice(1);
+  const filteredProjects = useMemo(
+    () =>
+      activeTab === "all"
+        ? PROJECTS
+        : PROJECTS.filter((p) => p.category === activeTab),
+    [activeTab]
+  );
 
-  // Scroll animation for the whole stack container
-  const { scrollYProgress } = useScroll({
-    target: stackRef,
-    offset: ["start start", "end end"],
-  });
+  const handleDragStart = (e: React.DragEvent, project: Project) => {
+    setDraggingId(project.id);
+    setInteracted(true);
+    e.dataTransfer.setData("text/plain", String(project.id));
+    e.dataTransfer.effectAllowed = "copy";
+  };
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 150,
-    damping: 20,
-    restDelta: 0.001,
-  });
+  const handleRead = (project: Project) => {
+    setActiveProject(project);
+    setInteracted(true);
+  };
 
   return (
-    <section
-      id="portfolio"
-      ref={sectionRef}
-      className="relative py-24 md:py-32"
-    >
+    <section id="portfolio" className="relative py-24 md:py-32 bg-muted/50">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/3 rounded-full blur-3xl" />
@@ -258,167 +79,141 @@ export default function Portfolio() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <span className="text-sm uppercase tracking-[0.3em] text-primary font-medium">
-            My Work
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-4">
-            Featured Projects
-          </h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">My Projects</h2>
           <p className="text-textSecondary max-w-2xl mx-auto">
-            A collection of projects spanning competitions, data analysis, web
-            development, and AI — each one a learning journey.
+            Drag a project card into the reader to explore the full story behind
+            each project.
           </p>
         </motion.div>
 
-        {/* Category Filter - 4 tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-2 md:gap-3 mb-10"
-        >
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                activeCategory === cat.id
-                  ? "bg-primary text-white shadow-lg shadow-primary/25"
-                  : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
-              }`}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-start">
+          {/* Left — reader machine (sticky on desktop) */}
+          <div className="lg:col-span-2 lg:sticky lg:top-24">
+            <ReaderMachine
+              hoveredProject={hoveredProject}
+              isDragging={draggingId !== null}
+              onRead={handleRead}
+            />
+          </div>
+
+          {/* Right — category tabs + scrollable card list */}
+          <div className="lg:col-span-3">
+            {/* Category tabs */}
+            <div
+              role="tablist"
+              aria-label="Filter projects by category"
+              className="flex flex-wrap gap-2 mb-6"
             >
-              {cat.label}
-            </button>
-          ))}
-        </motion.div>
+              {tabs.map((tab) => {
+                const active = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`relative px-3.5 py-2 rounded-full text-xs font-medium transition-colors duration-300 ${
+                      active
+                        ? "text-white"
+                        : "text-gray-600 bg-white border border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    {active && (
+                      <motion.div
+                        layoutId="portfolio-tab-pill"
+                        className="absolute inset-0 bg-primary rounded-full shadow-lg shadow-primary/25"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    <span className="relative">
+                      {tab.label}
+                      <span className={active ? "opacity-70" : "opacity-50"}>
+                        {" "}
+                        ({tab.count})
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-        {/* Scroll-stacked project showcase */}
-        {filteredProjects.length > 0 && (
-          <div
-            ref={stackRef}
-            className="relative"
-            style={{ height: `${filteredProjects.length * 100}vh` }}
-          >
-            {/* Sticky container — all cards converge here */}
-            <div className="sticky top-24 h-screen flex items-start justify-center pt-8">
-              <div
-                className="w-full relative"
-                style={{ height: "65vh", minHeight: "400px" }}
-              >
-                {/* First project — base layer, always visible */}
-                <div className="absolute inset-0 z-10 rounded-3xl overflow-hidden">
-                  <ProjectCardContent project={firstProject} />
-                </div>
-
-                {/* Subsequent projects — each slides up and overlaps the first */}
-                {remainingProjects.map((project, idx) => (
-                  <OverlapProjectCard
-                    key={project.id}
-                    project={project}
-                    index={idx}
-                    total={remainingProjects.length}
-                    scrollProgress={smoothProgress}
-                  />
-                ))}
-              </div>
+            {/* Scrollable card area */}
+            <div className="lg:max-h-[600px] overflow-y-auto pr-2 -mr-2">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-5"
+                >
+                  {activeTab === "all" ? (
+                    groups.map((group) => (
+                      <div key={group.cat.id}>
+                        <div className="flex items-center gap-2 mb-3 mt-1">
+                          <span className="w-2 h-2 rounded-full bg-primary" />
+                          <h5 className="text-xs font-bold uppercase tracking-wider text-textSecondary">
+                            {group.cat.label}
+                          </h5>
+                          <span className="text-xs text-textSecondary/70">
+                            ({group.projects.length})
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {group.projects.map((project, index) => (
+                            <ProjectCard
+                              key={project.id}
+                              project={project}
+                              index={index}
+                              showDragHint={
+                                !interacted && index === 0 && group.cat.id === groups[0].cat.id
+                              }
+                              onHover={setHoveredProject}
+                              onSelect={handleRead}
+                              onInteract={() => setInteracted(true)}
+                              onDragCardStart={handleDragStart}
+                              onDragCardEnd={() => setDraggingId(null)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="space-y-3">
+                      {filteredProjects.map((project, index) => (
+                        <ProjectCard
+                          key={project.id}
+                          project={project}
+                          index={index}
+                          showDragHint={!interacted && index === 0}
+                          onHover={setHoveredProject}
+                          onSelect={handleRead}
+                          onInteract={() => setInteracted(true)}
+                          onDragCardStart={handleDragStart}
+                          onDragCardEnd={() => setDraggingId(null)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
-        )}
-
-        {/* No projects fallback */}
-        {!firstProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
-          >
-            <p className="text-textSecondary text-lg">
-              No projects in this category yet. Check back soon!
-            </p>
-          </motion.div>
-        )}
-
-        {/* See More Details toggle */}
-        <div className="mt-16 text-center">
-          <motion.button
-            onClick={() => setShowMore(!showMore)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
-          >
-            <span>{showMore ? "Show Less" : "See More Details"}</span>
-            <motion.svg
-              animate={{ rotate: showMore ? 180 : 0 }}
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </motion.svg>
-          </motion.button>
         </div>
-
-        {/* Grid projects - hidden by default */}
-        <motion.div
-          layout
-          initial={false}
-          animate={{
-            height: showMore ? "auto" : 0,
-            opacity: showMore ? 1 : 0,
-            marginTop: showMore ? 32 : 0,
-          }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="overflow-hidden"
-        >
-          {showMore && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {PROJECTS.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.08 }}
-                  whileHover={{ y: -4 }}
-                  className={`group rounded-2xl border ${project.borderColor} ${project.color} bg-white/60 backdrop-blur-sm p-6 md:p-8 cursor-pointer transition-shadow duration-300 hover:shadow-xl`}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <span className="text-4xl">{project.image}</span>
-                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                      {CATEGORIES.find((c) => c.id === project.category)
-                        ?.label || project.category}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-textSecondary text-sm leading-relaxed mb-4">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-1 bg-gray-100/80 rounded-full text-xs font-medium text-gray-500"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </motion.div>
       </div>
+
+      {/* Project reader popup */}
+      <AnimatePresence>
+        {activeProject && (
+          <ProjectModal
+            project={activeProject}
+            onClose={() => setActiveProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

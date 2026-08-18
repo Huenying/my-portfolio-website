@@ -5,10 +5,23 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#hero" },
-  { label: "Portfolio", href: "#portfolio" },
   { label: "About", href: "#about" },
+  { label: "Portfolio", href: "#portfolio" },
   { label: "Contact", href: "#contact" },
 ];
+
+/** Trigger a download of the resume PDF (file to be added to /public later). */
+const downloadResume = () => {
+  const base =
+    process.env.NODE_ENV === "production" ? "/my-portfolio-website" : "";
+  const a = document.createElement("a");
+  a.href = `${base}/resume.pdf`;
+  a.download = "Cynthia-Resume.pdf";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -53,53 +66,80 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-end">
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.href}
-              onClick={() => handleClick(item.href)}
-              className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
-                activeSection === item.href.slice(1)
-                  ? scrolled
-                    ? "text-primary"
-                    : "text-white"
-                  : scrolled
-                    ? "text-gray-600 hover:text-gray-900"
-                    : "text-white/70 hover:text-white"
-              }`}
+        {/* Resume button — top-left, appears once the user scrolls */}
+        {scrolled && (
+          <button
+            onClick={downloadResume}
+            aria-label="Download resume"
+            title="Download resume (PDF)"
+            className="mr-auto flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold shadow-sm hover:bg-primary-dark transition-all duration-300"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
             >
-              {item.label}
-              {activeSection === item.href.slice(1) && (
-                <motion.div
-                  layoutId="nav-indicator"
-                  className="absolute inset-0 bg-primary/10 rounded-full -z-10"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
+              />
+            </svg>
+            Resume
+          </button>
+        )}
 
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          <motion.span
-            animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-            className="block w-6 h-0.5 bg-gray-800 rounded-full"
-          />
-          <motion.span
-            animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="block w-6 h-0.5 bg-gray-800 rounded-full"
-          />
-          <motion.span
-            animate={mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-            className="block w-6 h-0.5 bg-gray-800 rounded-full"
-          />
-        </button>
+        {/* Right cluster — desktop nav + hamburger */}
+        <div className="flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.href}
+                onClick={() => handleClick(item.href)}
+                className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  activeSection === item.href.slice(1)
+                    ? scrolled
+                      ? "text-primary"
+                      : "text-white"
+                    : scrolled
+                      ? "text-gray-600 hover:text-gray-900"
+                      : "text-white/70 hover:text-white"
+                }`}
+              >
+                {item.label}
+                {activeSection === item.href.slice(1) && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute inset-0 bg-primary/10 rounded-full -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden flex flex-col gap-1.5 p-2"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            <motion.span
+              animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+              className="block w-6 h-0.5 bg-gray-800 rounded-full"
+            />
+            <motion.span
+              animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
+              className="block w-6 h-0.5 bg-gray-800 rounded-full"
+            />
+            <motion.span
+              animate={mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+              className="block w-6 h-0.5 bg-gray-800 rounded-full"
+            />
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -125,6 +165,28 @@ export default function Navbar() {
                   {item.label}
                 </button>
               ))}
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  downloadResume();
+                }}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
+                  />
+                </svg>
+                Resume
+              </button>
             </div>
           </motion.div>
         )}

@@ -11,10 +11,9 @@ type TabId = "all" | CategoryId;
 
 /** Shortened labels for the compact tab bar (full labels live on the cards). */
 const TAB_LABELS: Record<CategoryId, string> = {
-  competition: "Competition",
-  "data-analysis": "Data Analysis",
-  "web-dev": "Web Dev",
-  "ai-dev": "AI Dev",
+  "claude-code": "Claude Code",
+  hackathon: "Hackathon",
+  coursework: "Coursework",
 };
 
 export default function Portfolio() {

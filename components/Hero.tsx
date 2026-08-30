@@ -42,18 +42,6 @@ function TypewriterText({ text }: { text: string }) {
   );
 }
 
-const downloadResume = () => {
-  const base =
-    process.env.NODE_ENV === "production" ? "/my-portfolio-website" : "";
-  const a = document.createElement("a");
-  a.href = `${base}/resume.pdf`;
-  a.download = "Cynthia-Resume.pdf";
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
-
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -138,34 +126,9 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              Year 3 Double Major in Business Analytics & Computer Science
+              Year 4 Double Major in Business Analytics & Computer Science
             </motion.p>
 
-            {/* Resume CTA */}
-            <motion.button
-              onClick={downloadResume}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65, duration: 0.6 }}
-              className="mt-8 inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-white text-[#1A2D28] text-base font-semibold shadow-xl shadow-black/25 hover:bg-[#F4F1EA] transition-colors"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
-                />
-              </svg>
-              Resume
-            </motion.button>
           </motion.div>
 
           {/* Cards — stacked by default, snap to a line instantly on scroll */}
@@ -180,7 +143,7 @@ export default function Hero() {
               <div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">My Portfolio</h3>
                 <p className="text-white/80 text-sm md:text-base">
-                  Explore my projects across competitions, data analysis, web development, and AI.
+                  Explore my projects across AI Engineering, data engineering &amp; analysis, web development and competitions.
                 </p>
                 <p className="text-white/60 text-xs mt-3 font-medium uppercase tracking-wider">View My Work →</p>
               </div>
@@ -212,7 +175,7 @@ export default function Hero() {
               <div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">Contact Me</h3>
                 <p className="text-white/80 text-sm md:text-base">
-                  Have a project in mind? I&apos;d love to hear from you. Reach out anytime!
+                  Seeking AI &amp; data engineering roles — let&apos;s build something impactful together.
                 </p>
                 <p className="text-white/60 text-xs mt-3 font-medium uppercase tracking-wider">Let&apos;s Connect →</p>
               </div>

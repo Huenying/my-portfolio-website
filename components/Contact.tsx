@@ -6,19 +6,13 @@ const CONTACTS = [
   {
     icon: "📧",
     title: "Email",
-    value: "cynthia@connect.hku.hk",
-    link: "mailto:cynthia@connect.hku.hk",
+    value: "cynthia.chy680@gmail.com",
+    link: "mailto:cynthia.chy680@gmail.com",
   },
   {
     icon: "📍",
     title: "Location",
     value: "Hong Kong",
-  },
-  {
-    icon: "🔗",
-    title: "LinkedIn",
-    value: "linkedin.com/in/cynthia-hku",
-    link: "#",
   },
   {
     icon: "🐙",
@@ -48,13 +42,13 @@ export default function Contact() {
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h2>
           <p className="text-textSecondary max-w-2xl mx-auto">
-            Have a project, question, or just want to say hi? Drop me a message
-            and I&apos;ll get back to you as soon as possible.
+            Seeking AI &amp; data engineering roles — I&apos;d love to connect and talk
+            about how I can contribute to your team.
           </p>
         </motion.div>
 
-        {/* Contact cards — 2x2 note cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
+        {/* Contact cards — one row of three */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {CONTACTS.map((item, index) => (
             <motion.div
               key={item.title}

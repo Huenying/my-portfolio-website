@@ -10,19 +10,6 @@ const NAV_ITEMS = [
   { label: "Contact", href: "#contact" },
 ];
 
-/** Trigger a download of the resume PDF (file to be added to /public later). */
-const downloadResume = () => {
-  const base =
-    process.env.NODE_ENV === "production" ? "/my-portfolio-website" : "";
-  const a = document.createElement("a");
-  a.href = `${base}/resume.pdf`;
-  a.download = "Cynthia-Resume.pdf";
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -66,31 +53,6 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-end">
-        {/* Resume button — top-left, appears once the user scrolls */}
-        {scrolled && (
-          <button
-            onClick={downloadResume}
-            aria-label="Download resume"
-            title="Download resume (PDF)"
-            className="mr-auto flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold shadow-sm hover:bg-primary-dark transition-all duration-300"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
-              />
-            </svg>
-            Resume
-          </button>
-        )}
-
         {/* Right cluster — desktop nav + hamburger */}
         <div className="flex items-center gap-1">
           <div className="hidden md:flex items-center gap-1">
@@ -165,28 +127,6 @@ export default function Navbar() {
                   {item.label}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  setMobileOpen(false);
-                  downloadResume();
-                }}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
-                  />
-                </svg>
-                Resume
-              </button>
             </div>
           </motion.div>
         )}

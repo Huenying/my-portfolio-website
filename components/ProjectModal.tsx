@@ -16,7 +16,7 @@ const C = {
   paper: "#f9f6ee", // window background
   paper2: "#f1ece0", // reading pane background
   border: "#ddd3bf", // borders / dashed pane border
-  borderSoft: "#e7dfcc", // title bar divider + corner fold
+  borderSoft: "#e7dfcc", // title bar divider
   accent: "#c99a6b", // warm tan accent (bullets, outcome label, footer dot)
   accentSoft: "rgba(201,154,107,0.35)", // category pill background
 };
@@ -104,7 +104,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           </button>
         </div>
 
-        {/* Reading pane — dashed border + corner fold, scrollable */}
+        {/* Reading pane — dashed border, scrollable */}
         <div
           className="relative flex-1 min-h-0 mx-[16px] my-[16px] rounded-[14px] border border-dashed overflow-y-auto"
           style={{ background: C.paper2, borderColor: C.border }}
@@ -128,6 +128,27 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 </span>
               </div>
             </div>
+
+            {/* Cover image */}
+            {project.cover && (
+              <figure
+                className="rounded-xl overflow-hidden border"
+                style={{ borderColor: C.border, background: C.paper }}
+              >
+                <img
+                  src={project.cover.src}
+                  alt={project.cover.caption}
+                  loading="lazy"
+                  className="w-full max-h-56 object-contain"
+                />
+                <figcaption
+                  className="px-3 py-1.5 text-[10px] tracking-wider"
+                  style={{ color: C.mossDim }}
+                >
+                  {project.cover.caption}
+                </figcaption>
+              </figure>
+            )}
 
             {/* Role / duration */}
             <div className="grid grid-cols-2 gap-4 text-[12px]">
@@ -155,7 +176,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </div>
             </div>
 
-            {/* What I did */}
+            {/* What I did — bullet points with related photos underneath */}
             <div>
               <p
                 className="text-[12px] uppercase tracking-wider mb-2"
@@ -163,20 +184,59 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               >
                 What I did
               </p>
-              <ul className="space-y-2">
-                {project.details.highlights.map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex gap-2 text-[13px] leading-relaxed"
-                    style={{ color: C.moss }}
-                  >
-                    <span className="flex-shrink-0" style={{ color: C.accent }}>
-                      —
-                    </span>
-                    {item}
-                  </li>
+              <div className="space-y-4">
+                {project.details.highlights.map((h, i) => (
+                  <div key={i}>
+                    <p
+                      className="flex gap-2 text-[13px] leading-relaxed"
+                      style={{ color: C.moss }}
+                    >
+                      <span className="flex-shrink-0" style={{ color: C.accent }}>
+                        —
+                      </span>
+                      <span>{h.text}</span>
+                    </p>
+                    {h.images && h.images.length > 0 && (
+                      <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {h.images.map((im, j) => (
+                          <figure
+                            key={j}
+                            className={`rounded-lg overflow-hidden border ${
+                              im.wide ? "sm:col-span-2" : ""
+                            }`}
+                            style={{
+                              borderColor: C.border,
+                              background: C.paper,
+                            }}
+                          >
+                            {im.src.endsWith(".mp4") ? (
+                              <video
+                                src={im.src}
+                                controls
+                                preload="metadata"
+                                className="w-full h-auto"
+                              />
+                            ) : (
+                              <img
+                                src={im.src}
+                                alt={im.caption}
+                                loading="lazy"
+                                className="w-full h-auto"
+                              />
+                            )}
+                            <figcaption
+                              className="px-2.5 py-1.5 text-[10px] tracking-wider"
+                              style={{ color: C.mossDim }}
+                            >
+                              {im.caption}
+                            </figcaption>
+                          </figure>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* Outcome */}

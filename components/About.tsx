@@ -5,44 +5,42 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const EXPERIENCES = [
   {
-    year: "2024 - Present",
+    year: "2023 - 2027",
     title: "BBA(BA) & BSc(CS)",
     company: "The University of Hong Kong",
-    description:
-      "Double majoring in Business Analytics and Computer Science. Dean's List recipient.",
+    description: "Double majoring in Business Analytics and Computer Science.",
     icon: "🎓",
   },
   {
-    year: "2025",
-    title: "Data Science Intern",
-    company: "Internship",
-    description:
-      "Built ML models for customer segmentation and predictive analytics.",
+    year: "2024",
+    title: "Executive Assistant III",
+    company: "WFSFAA Government Department",
+    description: "",
     icon: "💼",
   },
   {
-    year: "2024",
+    year: "2025",
+    title: "Data Analysis and Developer Intern",
+    company: "Internship",
+    description:
+      "RAG chatbot and data engineering with Google BigQuery and Power BI.",
+    icon: "💻",
+  },
+  {
+    year: "2025 - 2026",
     title: "Exchange Student",
     company: "Copenhagen Business School",
     description:
       "Semester exchange studying business analytics and international business.",
     icon: "🌍",
   },
-  {
-    year: "2023",
-    title: "Web Development Intern",
-    company: "Internship",
-    description:
-      "Designed and developed responsive websites and web apps with React and Next.js.",
-    icon: "🖥️",
-  },
 ];
 
 const INTERESTS = [
-  { icon: "🤖", name: "Machine Learning" },
-  { icon: "📊", name: "Data Science" },
-  { icon: "🗄️", name: "Data Engineering" },
-  { icon: "🌐", name: "Web Development" },
+  { icon: "🤖", name: "AI Engineering" },
+  { icon: "📊", name: "Data Engineering & Analytics" },
+  { icon: "🏗️", name: "Systems Architecture" },
+  { icon: "🎨", name: "Creative Technology" },
 ];
 
 /** Amber pushpin decoration (CSS/SVG) — sits on a card's top edge. */
@@ -91,8 +89,8 @@ export default function About() {
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">About Me</h2>
           <p className="text-textSecondary max-w-2xl mx-auto">
-            A passionate double-major student who loves bridging the gap between
-            business strategy and technical implementation.
+            Click Login to know more about me with areas of interest and
+            experience timeline.
           </p>
         </motion.div>
 
@@ -125,20 +123,18 @@ export default function About() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
                       {/* Photo space — paperclip */}
                       <div className="lg:col-span-5">
-                        <div className="relative aspect-[4/5] w-full max-w-[320px] mx-auto rounded-2xl border-2 border-dashed border-primary/30 bg-muted/40 flex items-center justify-center overflow-hidden">
+                        <div className="relative aspect-square w-full max-w-[300px] mx-auto rounded-full border-2 border-primary/20 bg-muted/40 overflow-hidden">
                           <Paperclip className="absolute -top-2.5 left-8 -rotate-12 z-10" />
-                          {/* Replace this placeholder with the real photo when provided:
-                              <Image
-                                src="/my-photo.jpg"
-                                alt="Cynthia"
-                                fill
-                                className="object-cover"
-                              />
-                          */}
-                          <div className="flex flex-col items-center gap-2 text-textSecondary/70 select-none">
-                            <span className="text-4xl">📷</span>
-                            <p className="text-xs font-medium">My photo coming soon</p>
-                          </div>
+                          <img
+                            src={
+                              (process.env.NODE_ENV === "production"
+                                ? "/my-portfolio-website"
+                                : "") + "/selfie.jpg"
+                            }
+                            alt="Cynthia"
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
                         </div>
                       </div>
 
@@ -156,24 +152,18 @@ export default function About() {
                                 Cynthia
                               </h3>
                               <p className="text-sm font-medium text-primary">
-                                BBA(BA)&amp;BSc(CS) • Year 3 • HKU
+                                BBA(BA)&amp;BSc(CS) • Year 4 • HKU
                               </p>
                             </div>
                           </div>
                           <p className="text-textSecondary leading-relaxed">
-                            I&apos;m a Year 3 undergraduate at the University of
-                            Hong Kong, pursuing a double major in Business
-                            Analytics and Computer Science. My passion lies at the
-                            intersection of data-driven decision-making and
-                            software engineering.
-                          </p>
-                          <br />
-                          <p className="text-textSecondary leading-relaxed">
-                            From analyzing complex datasets to building full-stack
-                            web applications, I thrive on turning ideas into
-                            impactful solutions. I&apos;m particularly fascinated by
-                            how AI and machine learning can transform traditional
-                            business processes.
+                            I&apos;m a Year 4 undergraduate at the University of Hong
+                            Kong, pursuing a double major in Business Analytics
+                            and Computer Science. My passion lies at the
+                            intersection of AI systems, data infrastructure, and
+                            software engineering. I thrive on turning complex data
+                            and cutting-edge AI into impactful, production-ready
+                            solutions.
                           </p>
                         </div>
 
@@ -245,9 +235,11 @@ export default function About() {
                                     </p>
                                   </div>
                                 </div>
-                                <p className="text-textSecondary text-xs mt-2 leading-relaxed">
-                                  {exp.description}
-                                </p>
+                                {exp.description && (
+                                  <p className="text-textSecondary text-xs mt-2 leading-relaxed">
+                                    {exp.description}
+                                  </p>
+                                )}
                               </div>
                             </motion.div>
                           ))}
@@ -308,13 +300,6 @@ export default function About() {
           <div className="mx-auto w-24 h-2.5 bg-[#16241F] rounded-b-lg" />
           <div className="mx-auto w-40 h-3 bg-[#16241F] rounded-b-xl" />
 
-          {/* Helper caption */}
-          <p className="mt-5 text-center text-sm text-textSecondary">
-            Click{" "}
-            <span className="font-semibold text-primary">Login</span> to reveal
-            my 自述 &amp; areas of interest, then scroll down to review the
-            experience timeline.
-          </p>
         </motion.div>
       </div>
     </section>

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Cynthia | Portfolio",
   description:
-    "Year 3 undergraduate double majoring in Business Analytics and Computer Science at HKU.",
+    "Final year undergraduate double majoring in Business Analytics and Computer Science at HKU.",
 };
 
 export default function RootLayout({
